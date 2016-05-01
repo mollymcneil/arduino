@@ -21,6 +21,9 @@ OneWire oneWire(ONE_WIRE_BUS);
 // Pass our oneWire reference to Dallas Temperature.
 DallasTemperature sensors(&oneWire);
 
+// Relay (Note: we're using an inverted relay for this kettle).
+#define RELAY_COMMAND_ON 0
+#define RELAY_COMMAND_OFF 1
 
 //Capacitive Sensor
 CapacitiveSensor   cs_4_2 = CapacitiveSensor(4,2);        // 10 megohm resistor between pins 4 & 2, pin 2 is sensor pin, add wire, foil
@@ -87,6 +90,9 @@ void setup() {
   pinMode(greenLEDPin, OUTPUT);
   pinMode(redLEDPin, OUTPUT);
   pinMode(blueLEDPin, OUTPUT);
+
+  //Relay
+  digitalWrite(relayPin, RELAY_COMMAND_OFF);
 
   //yellow LED
   //pinMode(yellowLEDPin, OUTPUT);
@@ -222,14 +228,14 @@ void loop() {
     
         if (tempVal > potVal && relayOn == 1) {
             digitalWrite(relayLEDpin, 0);
-            digitalWrite(relayPin, 0);
+            digitalWrite(relayPin, RELAY_COMMAND_OFF);
             relayOn = 0;
             lastToggledRelay = millis();
             
         }
         else if (tempVal < potVal && relayOn == 0) {
             digitalWrite(relayLEDpin, 1);
-            digitalWrite(relayPin, 1);
+            digitalWrite(relayPin, RELAY_COMMAND_ON);
             relayOn = 1;
             lastToggledRelay = millis();
         }
@@ -429,6 +435,7 @@ void loop() {
 
     relayOn = 0; 
     digitalWrite(relayLEDpin, 0);
+    digitalWrite(relayPin, RELAY_COMMAND_OFF);
     
   }
  
